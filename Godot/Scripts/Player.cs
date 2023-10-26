@@ -12,18 +12,18 @@ public partial class Player : Godot.RigidBody2D
 	// A lot of functionality in this class is also in the Integrate Forces method. We usually want to split those up into their own functions, which I haven't done here.
 	
 	[Export] // Export tag allows us to see this property in the inspector!
-	float deccelerationSpeed = 40f;
+	float deccelerationSpeed = 60f;
 	[Export]
 	float accelerationSpeed = 20f;
 	[Export]
-	float topSpeed = 350f;
+	float topSpeed = 700f;
 	
 	[Export]
-	float jumpHeight = 15;
+	float jumpHeight = 10;
 	[Export]
-	float upwardsGravityScale = 0f;
+	float upwardsGravityScale = -10f;
 	[Export]
-	float downwardsGravityScale = 40f;
+	float downwardsGravityScale = 60f;
 	[Export]
 	float jumpTime = 1f;
 	
@@ -71,8 +71,9 @@ public partial class Player : Godot.RigidBody2D
 				_grounded = false;
 			}
 		}
-		
+	
 		state.LinearVelocity = new Vector2(velocityX, jumpDirection * jumpHeight * -100f); // Jumps
+		
 		state.ApplyImpulse(new Vector2(accelerationSpeed * moveDirection, 0f));
 		
 		if(moveDirection == 0) { // deccelerates while no input
@@ -84,7 +85,7 @@ public partial class Player : Godot.RigidBody2D
 				state.LinearVelocity.Y);
 		}
 		
-		if(state.LinearVelocity.Y > 0f) { // Tweaks Gravity Scale Based On If You're Going Up Or Down.
+		if(state.LinearVelocity.Y < 0f) { // Tweaks Gravity Scale Based On If You're Going Up Or Down.
 			this.GravityScale = upwardsGravityScale;
 		} else {
 			this.GravityScale = downwardsGravityScale;
