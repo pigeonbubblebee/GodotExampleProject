@@ -14,9 +14,11 @@ public partial class Player : Godot.RigidBody2D
 	[Export] // Export tag allows us to see this property in the inspector!
 	float deccelerationSpeed = 60f;
 	[Export]
-	float accelerationSpeed = 20f;
+	float accelerationSpeed = 40f;
 	[Export]
-	float topSpeed = 700f;
+	float accelerationDirectionSwitchSpeed = 80f;
+	[Export]
+	float topSpeed = 900f;
 	
 	[Export]
 	float jumpHeight = 10;
@@ -74,7 +76,13 @@ public partial class Player : Godot.RigidBody2D
 	
 		state.LinearVelocity = new Vector2(velocityX, jumpDirection * jumpHeight * -100f); // Jumps
 		
-		state.ApplyImpulse(new Vector2(accelerationSpeed * moveDirection, 0f));
+		bool moveDirectionSign = moveDirection > 0f ? true : false; // this part can be optimized, but leaving it like this is for readability
+		bool velocityXSign = velocityX > 0f ? true : false;
+		
+		if(velocityXSign != moveDirectionSign)
+			state.ApplyImpulse(new Vector2(accelerationDirectionSwitchSpeed * moveDirection, 0f));
+		else
+			state.ApplyImpulse(new Vector2(accelerationSpeed * moveDirection, 0f));
 		
 		if(moveDirection == 0) { // deccelerates while no input
 			state = _dampVelocity(state, state.LinearVelocity.X);
